@@ -10,3 +10,4 @@ __pycache__/
 
 # Temporary test files
 sample.*
+test_document_*.txt
