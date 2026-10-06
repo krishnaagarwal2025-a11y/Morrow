@@ -3,4 +3,6 @@ python-docx
 sentence-transformers==6.0.1
 python-dotenv
 psycopg[binary]
+pgvector
 requests
+streamlit

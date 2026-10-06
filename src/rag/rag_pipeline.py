@@ -58,5 +58,6 @@ class RAGPipeline:
         return {
             "question": question,
             "answer": answer,
-            "sources": sources
+            "sources": sources,
+            "retrieved_context": context
         }
