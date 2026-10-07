@@ -1,63 +1,79 @@
 # Morrow
 
-> A local-first, RAG-based personal knowledge retrieval system for searching and understanding documents using natural language.
+> A local-first, document-grounded AI system for automatically indexing documents and answering natural-language questions using semantic and hybrid retrieval.
 
-## Overview
+Morrow is a learning-focused RAG (Retrieval-Augmented Generation) system designed to turn a collection of local documents into searchable knowledge.
 
-Morrow is a learning-focused software project that explores how modern Retrieval-Augmented Generation (RAG) systems work.
+Instead of manually organizing information into a knowledge base, Morrow can ingest documents, extract their content, split them into chunks, generate vector embeddings, store them in PostgreSQL with pgvector, retrieve relevant information using hybrid search, and pass the retrieved context to a local language model to generate grounded answers.
 
-The goal is to build a system that can automatically ingest documents from selected local folders, understand their content, retrieve relevant information, and provide source-grounded answers to natural-language questions.
+The project is being developed primarily as an engineering and learning project, with an emphasis on understanding how document ingestion, embeddings, vector databases, information retrieval, RAG pipelines, local LLMs, and evaluation systems work together.
 
-Instead of requiring users to manually organize information into notes or links, Morrow is designed to work on top of existing documents and make their contents easier to retrieve and understand.
+---
 
-## Problem
+## Table of Contents
 
-Personal information is often scattered across:
+- [Overview](#overview)
+- [Motivation](#motivation)
+- [Core Architecture](#core-architecture)
+- [How Morrow Works](#how-morrow-works)
+- [Current Features](#current-features)
+- [Supported Documents](#supported-documents)
+- [Technology Stack](#technology-stack)
+- [Project Structure](#project-structure)
+- [Database Design](#database-design)
+- [Retrieval System](#retrieval-system)
+- [RAG Pipeline](#rag-pipeline)
+- [Automatic Folder Synchronization](#automatic-folder-synchronization)
+- [Evaluation](#evaluation)
+- [Running Morrow](#running-morrow)
+- [Environment Configuration](#environment-configuration)
+- [Development Milestones](#development-milestones)
+- [Current Limitations](#current-limitations)
+- [Roadmap](#roadmap)
+- [Learning Goals](#learning-goals)
+- [License](#license)
 
-- PDF files
-- Word documents
-- Text files
-- Markdown notes
-- Research papers
-- College documents
-- Project documentation
-- Other local files
+---
 
-Traditional keyword search works well for finding exact words, but it is less effective for questions involving context, meaning, or relationships between pieces of information.
+# Overview
 
-For example:
+Morrow is a local-first document question-answering system.
 
-> "What did I write about vector databases in my research notes?"
+The system accepts documents such as:
 
-Morrow aims to retrieve the relevant content and generate an answer based on those sources.
+- PDF
+- DOCX
+- TXT
+- Markdown
 
-## Core Idea
+and processes them through an ingestion and retrieval pipeline.
 
-The planned architecture is:
+At a high level:
 
 ```text
 Local Documents
-      |
-      v
-Document Ingestion
-      |
-      v
-Text Extraction
-      |
-      v
+       │
+       ▼
+Document Extraction
+       │
+       ▼
 Chunking
-      |
-      v
-Embeddings
-      |
-      v
+       │
+       ▼
+Embedding Generation
+       │
+       ▼
 PostgreSQL + pgvector
-      |
-      v
-Semantic Retrieval
-      |
-      v
-LLM
-      |
-      v
-Answer + Sources
+       │
+       ▼
+Hybrid Retrieval
+(Vector + Keyword + RRF)
+       │
+       ▼
+Relevant Context
+       │
+       ▼
+Local LLM
+       │
+       ▼
+Grounded Answer + Sources

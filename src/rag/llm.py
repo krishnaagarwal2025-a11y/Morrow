@@ -16,6 +16,10 @@ def generate_response(prompt):
         timeout=120
     )
 
+    if not response.ok:
+        print("OLLAMA STATUS:", response.status_code)
+        print("OLLAMA RESPONSE:", response.text)
+
     response.raise_for_status()
 
     data = response.json()
