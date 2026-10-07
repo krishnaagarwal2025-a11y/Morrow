@@ -63,7 +63,39 @@ def delete_document_by_path(file_path):
     finally:
         connection.close()
 
+def update_document_path(
+    document_id,
+    file_path,
+    filename
+):
+    connection = get_connection()
 
+    try:
+        cursor = connection.cursor()
+
+        cursor.execute(
+            """
+            UPDATE documents
+            SET
+                file_path = %s,
+                filename = %s
+            WHERE id = %s;
+            """,
+            (
+                file_path,
+                filename,
+                document_id
+            )
+        )
+
+        connection.commit()
+
+    except Exception:
+        connection.rollback()
+        raise
+
+    finally:
+        connection.close()
 
 def find_document_by_path(file_path):
     connection = get_connection()
