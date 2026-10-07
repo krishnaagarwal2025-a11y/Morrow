@@ -1,5 +1,5 @@
 from ..embeddings.embedder import Embedder
-from ..database.retrieval import search_similar_chunks
+from src.database.retrieval import search_hybrid_rrf
 
 from .context_builder import build_context
 from .prompt import build_rag_prompt
@@ -16,18 +16,16 @@ class RAGPipeline:
 
     def answer(self, question):
 
-        # 1. Convert the question into an embedding
-        query_embedding = self.embedder.embed_text(question)
-
-        # 2. Retrieve relevant chunks from PostgreSQL + pgvector
-        results = search_similar_chunks(
-            query_embedding,
+        # 1. Retrieve relevant chunks using RRF hybrid retrieval
+        results = search_hybrid_rrf(
+            query=question,
+            embedder=self.embedder,
             top_k=self.top_k,
-            min_similarity=self.min_similarity
+            candidate_k=5
         )
 
-        # 3. If no sufficiently relevant chunks were found,
-        #    do not send an empty/irrelevant context to the LLM.
+        # 2. If no relevant chunks were found,
+        #    do not send empty/irrelevant context to the LLM.
         if not results:
             return {
                 "question": question,
@@ -38,23 +36,22 @@ class RAGPipeline:
                 "sources": []
             }
 
-        # 4. Build context from retrieved chunks
+        # 3. Build context from retrieved chunks
         context = build_context(results)
 
-        # 5. Build the RAG prompt
+        # 4. Build the RAG prompt
         prompt = build_rag_prompt(
             question,
             context
         )
 
-
-        # 6. Generate the answer using Gemma
+        # 5. Generate the answer using Gemma
         answer = generate_response(prompt)
 
-        # 7. Format source information separately
+        # 6. Format source information separately
         sources = format_sources(results)
 
-        # 8. Return the complete RAG result
+        # 7. Return the complete RAG result
         return {
             "question": question,
             "answer": answer,

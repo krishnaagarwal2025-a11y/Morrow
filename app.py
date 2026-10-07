@@ -317,7 +317,10 @@ if st.button("Ask Morrow"):
 
                     filename = source["filename"]
                     page = source["page_number"]
-                    similarity = source["similarity"]
+
+                    rrf_score = source.get("rrf_score")
+                    vector_rank = source.get("vector_rank")
+                    keyword_rank = source.get("keyword_rank")
 
                     if page is not None:
 
@@ -334,8 +337,16 @@ if st.button("Ask Morrow"):
                     st.write(
                         f"📄 **{filename}** — "
                         f"{location} — "
-                        f"Similarity: "
-                        f"{similarity:.4f}"
+                        f"Chunk: {source['chunk_id']}"
+                    )
+
+                    st.caption(
+                        f"RRF Score: "
+                        f"{rrf_score:.6f} | "
+                        f"Vector Rank: "
+                        f"{vector_rank if vector_rank is not None else 'Not retrieved'} | "
+                        f"Keyword Rank: "
+                        f"{keyword_rank if keyword_rank is not None else 'Not retrieved'}"
                     )
 
             else:
