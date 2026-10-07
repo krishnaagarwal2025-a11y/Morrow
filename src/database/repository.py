@@ -29,6 +29,76 @@ def insert_document(
 
     return cursor.fetchone()[0]
 
+def delete_document_by_path(file_path):
+    connection = get_connection()
+
+    try:
+        cursor = connection.cursor()
+
+        cursor.execute(
+            """
+            DELETE FROM documents
+            WHERE file_path = %s
+            RETURNING id, filename;
+            """,
+            (file_path,)
+        )
+
+        row = cursor.fetchone()
+
+        connection.commit()
+
+        if row is None:
+            return None
+
+        return {
+            "id": row[0],
+            "filename": row[1]
+        }
+
+    except Exception:
+        connection.rollback()
+        raise
+
+    finally:
+        connection.close()
+
+
+
+def find_document_by_path(file_path):
+    connection = get_connection()
+
+    try:
+        cursor = connection.cursor()
+
+        cursor.execute(
+            """
+            SELECT
+                id,
+                filename,
+                file_path,
+                file_hash
+            FROM documents
+            WHERE file_path = %s
+            LIMIT 1;
+            """,
+            (file_path,)
+        )
+
+        row = cursor.fetchone()
+
+        if row is None:
+            return None
+
+        return {
+            "id": row[0],
+            "filename": row[1],
+            "file_path": row[2],
+            "file_hash": row[3]
+        }
+
+    finally:
+        connection.close()
 
 def find_document_by_hash(file_hash):
     connection = get_connection()
