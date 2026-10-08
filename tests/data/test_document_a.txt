@@ -1,0 +1,7 @@
+Morrow Test Document A
+
+This document contains information about databases.
+
+Morrow uses PostgreSQL as its primary relational database.
+The pgvector extension is used for storing embeddings
+and performing vector similarity search.

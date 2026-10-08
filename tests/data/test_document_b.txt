@@ -1,0 +1,7 @@
+Morrow Test Document B
+
+This document contains information about document processing.
+
+Morrow supports PDF, DOCX, TXT, and Markdown documents.
+The extraction layer converts these documents into a
+common text representation before chunking.

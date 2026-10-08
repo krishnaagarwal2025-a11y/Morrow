@@ -1,0 +1,13 @@
+Morrow Research Lab - Company Overview
+
+Morrow Research Lab is a fictional technology company focused on building privacy-first software for intelligent information retrieval. The company develops systems that allow users to store documents locally, search their information semantically, and retrieve relevant knowledge without sending private documents to external servers.
+
+The main research areas of Morrow Research Lab are document processing, natural language processing, vector databases, semantic search, and retrieval-augmented generation. The engineering team is currently developing a local-first knowledge retrieval platform.
+
+The platform accepts different document formats including PDF, DOCX, TXT, and Markdown files. Documents are first processed by format-specific extractors. The extracted text is then divided into smaller chunks so that individual pieces of information can be searched independently.
+
+Each chunk contains metadata such as its source document, file type, page number, chunk index, and word count. Preserving metadata is important because the system should eventually be able to tell the user where a retrieved piece of information came from.
+
+Morrow follows a local-first philosophy. Documents should remain on the user's computer whenever possible. This approach is intended to improve privacy and reduce dependence on external cloud services.
+
+The long-term goal is to build a personal knowledge system that can retrieve information from a large collection of documents and provide useful answers with references to the original sources.

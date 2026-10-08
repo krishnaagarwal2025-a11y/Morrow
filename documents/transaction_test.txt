@@ -1,0 +1,3 @@
+This document is being used to test transactional document ingestion in Morrow.
+
+Morrow should extract this text, create chunks, generate embeddings, and store the document and its chunks using a single database transaction.

@@ -1,11 +1,20 @@
-from .chunker import chunk_document
+import sys
+from pathlib import Path
 
+# Ensure project root is in sys.path
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
+
+from src.document_ingestion.chunker import chunk_document
+
+base_dir = PROJECT_ROOT / "samples" if (PROJECT_ROOT / "samples").exists() else Path(".")
 
 files = [
-    "sample.pdf",
-    "sample.docx",
-    "sample.txt",
-    "sample.md"
+    str(base_dir / "sample.pdf"),
+    str(base_dir / "sample.docx"),
+    str(base_dir / "sample.txt"),
+    str(base_dir / "sample.md")
 ]
 
 

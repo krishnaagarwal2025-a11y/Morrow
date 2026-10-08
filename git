@@ -1,0 +1,1 @@
+Morrow diff -- .gitignore src/file_watcher/watcher.py diff --statdiff --git a/.gitignore b/.gitignoreindex 8d95af1..fd98bdd 100644--- a/.gitignore+++ b/.gitignore@@ -4\,10 +4\,11 @@

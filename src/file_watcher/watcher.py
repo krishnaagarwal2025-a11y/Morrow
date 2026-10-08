@@ -30,15 +30,25 @@ DEBOUNCE_SECONDS = 1.0
 
 class DocumentEventHandler(FileSystemEventHandler):
 
-    def __init__(self):
+    def __init__(self, watched_folder):
         super().__init__()
-        self.last_event_times = {}
+        self.watched_folder = Path(watched_folder).resolve()
+        self.last_event_times = {}      
 
     def _is_supported_file(self, file_path):
         return (
             Path(file_path).suffix.lower()
             in SUPPORTED_EXTENSIONS
         )
+
+    def _is_inside_watched_folder(self, file_path):
+        try:
+            Path(file_path).resolve().relative_to(
+                self.watched_folder
+            )
+            return True
+        except ValueError:
+            return False
 
     def _is_file_ready(self, file_path, retries=5, delay=0.5):
         path = Path(file_path)
@@ -265,6 +275,176 @@ class DocumentEventHandler(FileSystemEventHandler):
                 f"{file_path.name}: {error}"
             )
 
+    def on_moved(self, event):
+        if event.is_directory:
+            return
+
+        source_path = Path(event.src_path)
+        destination_path = Path(event.dest_path)
+
+        source_inside = self._is_inside_watched_folder(source_path)
+        destination_inside = self._is_inside_watched_folder(destination_path)
+
+        # File moved from outside into the watched folder.
+        # This is normally handled as a creation event, but
+        # keeping this case here makes the handler robust.
+        if not source_inside and destination_inside:
+
+            if not self._is_supported_file(destination_path):
+                return
+
+            if not self._should_process(destination_path):
+                return
+
+            print(
+                f"\nDocument moved into watched folder: "
+                f"{destination_path.name}"
+            )
+
+            self.index_file(destination_path)
+            return
+
+        # File moved from the watched folder to somewhere else.
+        if source_inside and not destination_inside:
+
+            if not self._is_supported_file(source_path):
+                return
+
+            print(
+                f"\nDocument moved out of watched folder: "
+                f"{source_path.name}"
+            )
+
+            try:
+                resolved_source = str(source_path.resolve())
+
+                deleted_document = delete_document_by_path(
+                    resolved_source
+                )
+
+                if deleted_document is None:
+                    print(
+                        f"No database record found for "
+                        f"{source_path.name}. Nothing to remove."
+                    )
+                    return
+
+                print(
+                    f"Removed "
+                    f"{deleted_document['filename']} "
+                    f"from Morrow because it left the watched folder "
+                    f"(Document ID: "
+                    f"{deleted_document['id']})"
+                )
+
+            except Exception as error:
+                print(
+                    f"Failed to remove moved document "
+                    f"{source_path.name}: {error}"
+                )
+
+            return
+
+        # File moved from one location to another inside
+        # the watched folder.
+        if source_inside and destination_inside:
+
+            if not self._is_supported_file(source_path):
+                return
+
+            if not self._is_supported_file(destination_path):
+                print(
+                    f"\nDocument moved to unsupported format: "
+                    f"{destination_path.name}"
+                )
+
+                try:
+                    deleted_document = delete_document_by_path(
+                        str(source_path.resolve())
+                    )
+
+                    if deleted_document is not None:
+                        print(
+                            f"Removed "
+                            f"{deleted_document['filename']} "
+                            f"from Morrow."
+                        )
+
+                except Exception as error:
+                    print(
+                        f"Failed to remove moved document "
+                        f"{source_path.name}: {error}"
+                    )
+
+                return
+
+            print(
+                f"\nDocument moved: "
+                f"{source_path.name} → "
+                f"{destination_path.name}"
+            )
+
+            try:
+                resolved_source = str(source_path.resolve())
+                resolved_destination = str(
+                    destination_path.resolve()
+                )
+
+                existing_document = find_document_by_path(
+                    resolved_source
+                )
+
+                if existing_document is None:
+                    print(
+                        f"No database record found for "
+                        f"{source_path.name}. "
+                        f"Indexing destination as a new document."
+                    )
+
+                    self.index_file(destination_path)
+                    return
+
+                existing_destination = find_document_by_path(
+                    resolved_destination
+                )
+
+                if existing_destination is not None:
+                    print(
+                        f"Destination already has a database record: "
+                        f"{destination_path.name}"
+                    )
+
+                    print(
+                        f"Removing old source record: "
+                        f"{source_path.name}"
+                    )
+
+                    delete_document_by_path(
+                        resolved_source
+                    )
+
+                    return
+
+                update_document_path(
+                    document_id=existing_document["id"],
+                    file_path=resolved_destination,
+                    filename=destination_path.name
+                )
+
+                print(
+                    f"Updated Morrow path: "
+                    f"{source_path.name} → "
+                    f"{destination_path.name} "
+                    f"(Document ID: "
+                    f"{existing_document['id']})"
+                )
+
+            except Exception as error:
+                print(
+                    f"Failed to process moved document "
+                    f"{source_path.name}: {error}"
+                )
+
 
 def initial_scan(folder_path, event_handler):
     folder = Path(folder_path)
@@ -366,7 +546,7 @@ def start_watcher(folder_path):
             f"Watcher path is not a directory: {folder}"
         )
 
-    event_handler = DocumentEventHandler()
+    event_handler = DocumentEventHandler(folder)
 
     # First synchronize files that already exist.
     initial_scan(

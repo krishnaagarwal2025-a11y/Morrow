@@ -1,0 +1,43 @@
+MORROW CACHE TEST DOCUMENT
+
+Project: Aurora Notes
+
+Aurora Notes is a fictional document management system created
+for testing the Morrow RAG pipeline.
+
+The system stores documents in SQLite.
+
+The embedding model used by Aurora Notes is MiniLM-L6-v2.
+
+Aurora Notes uses an embedding dimension of 384.
+
+The default chunk size is 300 words.
+
+The default chunk overlap is 50 words.
+
+The system retrieves 4 chunks for each question.
+
+Aurora Notes was created in 2024.
+
+The project has three main components:
+1. Document ingestion
+2. Semantic retrieval
+3. Answer generation
+
+Document ingestion extracts text from uploaded files.
+
+Semantic retrieval compares the question embedding with stored
+document embeddings.
+
+Answer generation uses the retrieved context to produce a response.
+
+The project supports TXT and Markdown files.
+
+The testing team recorded a retrieval accuracy of 92 percent
+during an internal experiment.
+
+The largest document tested contained 12,500 words.
+
+The average retrieval time was 180 milliseconds.
+
+END OF DOCUMENT

@@ -1,0 +1,62 @@
+[
+  {
+    "question": "What database does Aurora Notes use?",
+    "expected_filename": "morrow_cache_test.txt",
+    "expected_evidence": "The system stores documents in SQLite."
+  },
+  {
+    "question": "How many chunks are retrieved for each question?",
+    "expected_filename": "morrow_cache_test.txt",
+    "expected_evidence": "The system retrieves 4 chunks for each question."
+  },
+  {
+    "question": "What embedding model does Aurora Notes use?",
+    "expected_filename": "morrow_cache_test.txt",
+    "expected_evidence": "The embedding model used by Aurora Notes is MiniLM-L6-v2."
+  },
+  {
+    "question": "What is the embedding dimension used by Aurora Notes?",
+    "expected_filename": "morrow_cache_test.txt",
+    "expected_evidence": "Aurora Notes uses an embedding dimension of 384."
+  },
+  {
+    "question": "What is the default chunk size?",
+    "expected_filename": "morrow_cache_test.txt",
+    "expected_evidence": "The default chunk size is 300 words."
+  },
+  {
+    "question": "What is the default chunk overlap?",
+    "expected_filename": "morrow_cache_test.txt",
+    "expected_evidence": "The default chunk overlap is 50 words."
+  },
+  {
+    "question": "MiniLM-L6-v2",
+    "expected_filename": "morrow_cache_test.txt",
+    "expected_evidence": "The embedding model used by Aurora Notes is MiniLM-L6-v2."
+  },
+  {
+    "question": "384",
+    "expected_filename": "morrow_cache_test.txt",
+    "expected_evidence": "Aurora Notes uses an embedding dimension of 384."
+  },
+  {
+    "question": "2024",
+    "expected_filename": "morrow_cache_test.txt",
+    "expected_evidence": "Aurora Notes was created in 2024."
+  },
+  {
+    "question": "12,500 words",
+    "expected_filename": "morrow_cache_test.txt",
+    "expected_evidence": "The largest document tested contained 12,500 words."
+  },
+  {
+    "question": "180 milliseconds",
+    "expected_filename": "morrow_cache_test.txt",
+    "expected_evidence": "The average retrieval time was 180 milliseconds."
+  },
+  {
+    "question": "92 percent",
+    "expected_filename": "morrow_cache_test.txt",
+    "expected_evidence": "The testing team recorded a retrieval accuracy of 92 percent during an internal experiment."
+  }
+]

@@ -4,10 +4,11 @@
 # Python cache
 __pycache__/
 *.pyc
+.pytest_cache/
 
 # Environment variables / secrets
 .env
 
-# Temporary test files
-sample.*
-test_document_*.txt
+# Temporary test files in root
+/sample.*
+/test_document_*.txt
